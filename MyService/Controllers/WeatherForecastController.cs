@@ -11,6 +11,8 @@ using MyService.Features.TicketCreate;
 using MyOwnServicw.Features.GiveTicket;
 using MyService.Filtrs;
 using MyService.Models;
+using DalSoft.RestClient;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MyService.Controllers
 {
@@ -38,6 +40,7 @@ namespace MyService.Controllers
         /// <returns>Список всех событий</returns>
         [HttpGet]
         [TypeFilter(typeof(SampleExceptionFilter))]
+        [TypeFilter(typeof(ScExceptionFiltr))]
         [Route("api/Events")]
         public async Task<IActionResult> GetAll()
         {
@@ -61,14 +64,15 @@ namespace MyService.Controllers
         /// 
         /// Например:
         /// 
-        /// begin: 2023-03-14T22:02:57.704Z
+        /// begin: 2023-03-14T22:02:57.704Z - начала приода
         /// 
-        /// end: 2023-04-14T22:02:57.704Z
+        /// end: 2023-04-14T22:02:57.704Z - конец периода
         /// 
         /// Запрос список событий, которые попадают в данный промежуток времени
         /// </remarks>
         [HttpGet]
         [TypeFilter(typeof(SampleExceptionFilter))]
+        [TypeFilter(typeof(ScExceptionFiltr))]
         [Route("api/Events/{begin:datetime}&{end:datetime}")]
         public async Task<IActionResult> GetWithFiltr([FromRoute] DateTime begin, DateTime end)
         {
@@ -85,7 +89,7 @@ namespace MyService.Controllers
         /// Получить событие по его id
         /// </summary>
         ///  <remarks>
-        /// На вход принимает параметр id типа Guid
+        /// На вход принимает параметр id события типа Guid
         /// 
         /// Например:
         /// 
@@ -96,6 +100,7 @@ namespace MyService.Controllers
         /// </remarks>
         [HttpGet]
         [TypeFilter(typeof(SampleExceptionFilter))]
+        [TypeFilter(typeof(ScExceptionFiltr))]
         [Route("api/Events/{id:guid}")]
         public async Task<IActionResult> GetEvent([FromRoute] Guid id)
         {
@@ -116,17 +121,21 @@ namespace MyService.Controllers
         /// 
         /// {
         /// 
-        /// "name": "string",
+        /// "name": "string", - название мероприятия
         /// 
-        ///"description": "string",
+        ///"description": "string", - описание
         ///
-        ///"begin": "2023-03-14T21:57:07.693Z",
+        ///"begin": "2023-03-14T21:57:07.693Z", - дата начала
         ///
-        /// "end": "2023-03-14T21:57:07.693Z",
+        /// "end": "2023-03-14T21:57:07.693Z", - дата конца
         /// 
-        /// "imageId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        /// "imageId": "3fa85f64-5717-4562-b3fc-2c963f66afa6", - id изображения
         /// 
-        ///"spaceId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        ///"spaceId": "3fa85f64-5717-4562-b3fc-2c963f66afa6" - id пространства
+        ///
+        ///"count" - количество билетов
+        ///
+        /// "free": true - можно ли добалять билеты
         ///
         /// }
         /// 
@@ -134,6 +143,7 @@ namespace MyService.Controllers
         /// 
         /// </remarks>
         [Route("api/Events")]
+        [TypeFilter(typeof(ScExceptionFiltr))]
         [TypeFilter(typeof(SampleExceptionFilter))]
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] AddEventCommand client,
@@ -172,6 +182,8 @@ namespace MyService.Controllers
         /// 
         ///"spaceId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         ///
+        /// "free": true - можно ли добалять билеты
+        ///
         /// } 
         /// 
         /// Запрос возвращает измененное событие, если оно было успешно изменено
@@ -180,6 +192,7 @@ namespace MyService.Controllers
         /// </remarks>
 
         [HttpPut]
+        [TypeFilter(typeof(ScExceptionFiltr))]
         [TypeFilter(typeof(SampleExceptionFilter))]
         [Route("api/Events/{id:guid}")]
         public async Task<IActionResult> Change([FromRoute] Guid id, [FromBody] ChangeEventCommand client,
@@ -208,6 +221,7 @@ namespace MyService.Controllers
         /// </remarks>
         [HttpDelete]
         [TypeFilter(typeof(SampleExceptionFilter))]
+        [TypeFilter(typeof(ScExceptionFiltr))]
         [Route("api/Events/{id:guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
@@ -220,8 +234,25 @@ namespace MyService.Controllers
 
 
         }
+        /// <summary>
+        /// Дать пользователю билет
+        /// </summary>
+        ///  <remarks>
+        /// На вход принимает :
+        /// 
+        /// {
+        /// 
+        /// "eventId": "3fa85f64-5717-4562-b3fc-2c963f66afa6", - событие на которое нужно дать билет
+        ///"userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6", - пользователь котрому нужно дать билет
+        /// 
+        /// }
+        /// Запрос возвращает билет, если ое было успешно подарен
+        /// 
+        /// Если нет, то возвращает причину ошибки
+        /// </remarks>
         [HttpGet]
         [TypeFilter(typeof(SampleExceptionFilter))]
+        [TypeFilter(typeof(ScExceptionFiltr))]
         [Route("api/GiveTicket/{userid:guid}&{eventid:guid}")]
         public async Task<IActionResult> GiveTicket([FromRoute] Guid userid, Guid eventid)
         {
@@ -232,8 +263,25 @@ namespace MyService.Controllers
             return new JsonResult(new { Ticket = ev });
 
         }
+        /// <summary>
+        /// Проверить наличие билета у пользователя
+        /// </summary>
+        ///  <remarks>
+        /// На вход принимает :
+        /// 
+        /// {
+        /// 
+        /// "eventId": "3fa85f64-5717-4562-b3fc-2c963f66afa6", - событие для которого нужно проверить билет
+        ///"userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6", - пользователь для которого нужно проверить билет
+        /// 
+        /// }
+        /// Запрос возвращает true,  билет , если он существует
+        /// 
+        /// Если нет, то возвращает причину null
+        /// </remarks>
         [HttpGet]
         [TypeFilter(typeof(SampleExceptionFilter))]
+        [TypeFilter(typeof(ScExceptionFiltr))]
         [Route("api/CheckTicket/{userid:guid}&{eventid:guid}")]
         public async Task<IActionResult> CheckTicket([FromRoute] Guid userid, Guid eventid)
         {
@@ -244,8 +292,25 @@ namespace MyService.Controllers
             return new JsonResult(new { Ticket = ev });
 
         }
+        /// <summary>
+        /// Добавить билеты для события
+        /// </summary>
+        ///  <remarks>
+        /// На вход принимает следующую форму:
+        /// 
+        /// {
+        /// 
+        /// "eventId": "3fa85f64-5717-4562-b3fc-2c963f66afa6", - событие для которого нужно добавить билет
+        ///"count": 0 - количество добавляемых билетов
+        /// 
+        /// }
+        /// Запрос возвращает true, если билеты были успешно добавлены
+        /// 
+        /// Если нет, то возвращает причину ошибки
+        /// </remarks>
         [HttpPost]
         [TypeFilter(typeof(SampleExceptionFilter))]
+        [TypeFilter(typeof(ScExceptionFiltr))]
         [Route("api/AddTickets")]
         public async Task<IActionResult> AddTickets([FromBody] AddTicketCommand client, CancellationToken token)
         {
@@ -254,6 +319,74 @@ namespace MyService.Controllers
             bool ev = await _mediator.Send(client, token);
             return new JsonResult(new { result = ev });
 
+        }
+        /// <summary>
+        /// Запрос для получения логина и пароля
+        /// </summary>
+        ///  <remarks>
+        /// На вход принимает :
+        /// 
+        /// {
+        /// 
+        /// "password": Poltavka -пароль
+        ///"name": Eugene - логин
+        /// 
+        /// }
+        /// Запрос возвращает true, аутентификация произошла успешно
+        /// 
+        /// Если нет, то возвращает код 401
+        /// </remarks>
+        [HttpGet]
+        [TypeFilter(typeof(SampleExceptionFilter))]
+        [TypeFilter(typeof(ScExceptionFiltr))]
+        [Route("api/GetToken/{name}&{password}")]
+        public async Task<IActionResult> GetToken([FromRoute] string password, string name)
+        {
+
+            HttpClient httpClient = new HttpClient();
+            var client = new RestClient("http://myserviceserver").Get();
+            
+            var client3 = new RestClient("http://myserviceserver/WeatherForecast?username=Eugene&password=Poltavka").Get();
+            // получаем ответ
+            HttpResponseMessage response = await httpClient.GetAsync("https://localhost:32768/WeatherForecast?username=Eugene&password=Poltavka'");
+                // получаем ответ
+           string content = await response.Content.ReadAsStringAsync();
+           
+            
+            return new JsonResult(new { Ticket = content });
+
+        }
+        /// <summary>
+        /// Запрос проверки аутентификации
+        /// </summary>
+        ///  <remarks>
+        /// На вход принимает :
+        /// 
+        /// {
+        /// 
+        /// "token": JWT токен
+  
+        /// 
+        /// }
+        /// Запрос возвращает true, аутентификация произошла успешно
+        /// 
+        /// Если нет, то возвращает код 401
+        [HttpGet]
+        [TypeFilter(typeof(ScExceptionFiltr))]
+        [TypeFilter(typeof(SampleExceptionFilter))]
+        [Route("stub/authstub")]
+        public IActionResult  CheckAuthoriz([FromHeader]
+           string token)
+        {
+            if (!this.tokencheck(token)) return Unauthorized(("Invalide token"));
+
+            return new JsonResult(true );
+
+        }
+        private bool tokencheck(string? tok)
+        {
+            if (tok is  null) return false;
+            return true;
         }
     }
 }

@@ -18,6 +18,7 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 builder.Services.AddSingleton<DataImage, ImageData>();
 builder.Services.AddSingleton<DataEvent, EventData>();
@@ -26,7 +27,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,7 +41,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors(builder => builder.AllowAnyOrigin());
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

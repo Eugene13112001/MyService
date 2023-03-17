@@ -6,13 +6,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>548564e2-1867-41d9-819d-9be7bd4235cc</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DalSoft.RestClient" Version="4.4.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.1" />
     <PackageReference Include="MediatR" Version="12.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.3" />
+    <PackageReference Include="Microsoft.Azure.Management.ResourceManager.Fluent" Version="1.38.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
@@ -20,5 +23,9 @@
   <ItemGroup>
     <ProjectReference Include="..\SC.Internship.Common\SC.Internship.Common.csproj" />
   </ItemGroup>
+
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
 
 </Project>

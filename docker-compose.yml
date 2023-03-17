@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  myservice:
+    image: ${DOCKER_REGISTRY-}myservice
+    build:
+      context: .
+      dockerfile: MyService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE1=http://myserviceserver:80 # services1 will be resolved by docker
+  myserviceserver:
+    image: ${DOCKER_REGISTRY-}myservice.server
+    build:
+      context: .
+      dockerfile: MyService.Server/Dockerfile
+    ports:
+      - "1001:80"
