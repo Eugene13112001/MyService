@@ -44,9 +44,9 @@ namespace MyService.Features.TicketCreate
             {
 
                
-                RuleFor(c => c.EventId).NotEmpty();
-                RuleFor(c => c.Count).NotEmpty();
-                RuleFor(c => c.Count).NotEmpty();
+                RuleFor(c => c.EventId).NotEmpty().NotEmpty().WithMessage("EventId: EventId не существет");
+                RuleFor(c => c.Count).NotEmpty().WithMessage("EventId: Count не существет"); 
+                
 
             }
 

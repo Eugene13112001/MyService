@@ -58,16 +58,16 @@ namespace MyService.Features.EventChange
         {
             public ChangeProductCommandValidator(DataImage images, DataSpace space)
             {
-                RuleFor(c => c.Id).NotEmpty();
-                RuleFor(c => c.Name).NotEmpty();
-                RuleFor(c => c.Description).NotEmpty();
-                RuleFor(c => c.Begin).NotEmpty();
-                RuleFor(c => c.End).NotEmpty();
-                RuleFor(c => this.ImageCheck(images, c.ImageId)).Equal(true).WithMessage("Изображения не существет");
+                RuleFor(c => c.Id).NotEmpty().WithMessage("Id: Изображения не существет"); 
+                RuleFor(c => c.Name).NotEmpty().WithMessage("Name: Изображения не существет"); 
+                RuleFor(c => c.Description).NotEmpty().WithMessage("Description: Изображения не существет"); 
+                RuleFor(c => c.Begin).NotEmpty().WithMessage("Begin: Изображения не существет"); 
+                RuleFor(c => c.End).NotEmpty().WithMessage("End: Изображения не существет"); 
+                RuleFor(c => this.ImageCheck(images, c.ImageId)).Equal(true).WithMessage("ImageId: Изображения не существет");
                 RuleFor(c => this.SpaceCheck(space, c.SpaceId)).Equal(true)
-                    .WithMessage("Пространства не существет");
+                    .WithMessage("SpaceId: Пространства не существет");
                 RuleFor(c => this.DateCheck(c.Begin, c.End)).Equal(true)
-                    .WithMessage("Дата конца дожна быть больше даты начала");
+                    .WithMessage("Date: Дата конца дожна быть больше даты начала");
             }
 
             private bool DateCheck(DateTime? begin, DateTime? end)

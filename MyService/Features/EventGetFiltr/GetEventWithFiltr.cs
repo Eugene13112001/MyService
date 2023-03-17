@@ -37,7 +37,7 @@ namespace MyService.Features.EventGetFiltr
                 RuleFor(c => c.Begin).NotEmpty();
                 RuleFor(c => c.End).NotEmpty();
                 RuleFor(c => this.DateCheck(c.Begin, c.End)).Equal(true)
-                                    .WithMessage("Дата конца дожна быть больше даты начала");
+                                    .WithMessage("Date: Дата конца дожна быть больше даты начала");
             }
 
             private bool DateCheck(DateTime? begin, DateTime? end)

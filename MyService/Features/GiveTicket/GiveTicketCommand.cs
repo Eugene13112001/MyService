@@ -42,8 +42,8 @@ namespace MyOwnServicw.Features.GiveTicket
             {
 
 
-                RuleFor(c => c.EventId).NotEmpty();
-                RuleFor(c => c.UserId).NotEmpty();
+                RuleFor(c => c.EventId).NotEmpty().WithMessage("EventId: EventId не существет");
+                RuleFor(c => c.UserId).NotEmpty().WithMessage("UserId: EventId не существет");
             }
 
 

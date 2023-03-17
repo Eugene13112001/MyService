@@ -57,19 +57,19 @@ namespace MyService.Features.EventCreate
             public AddProductCommandValidator(DataImage images, DataSpace space)
             {
 
-                RuleFor(c => this.NameCheck(c.Name)).Equal(true).WithMessage("Name: Изображения не существет");
-                RuleFor(c => this.NameCheckLength(c.Name)).Equal(true).WithMessage("Name: Изображения не длина"); 
-                RuleFor(c => c.Description).NotEmpty().WithMessage("Des: Изображения не длина");
-                RuleFor(c => c.Count).NotEmpty().WithMessage("Des: Изображения не длина")
+                RuleFor(c => this.NameCheck(c.Name)).Equal(true).WithMessage("Name: Имя не существет");
+                RuleFor(c => this.NameCheckLength(c.Name)).Equal(true).WithMessage("Name: Длина имени маленькая"); 
+                RuleFor(c => c.Description).NotEmpty().WithMessage("Description: Изображения не длина");
+                RuleFor(c => c.Count).NotEmpty().WithMessage("Description: Изображения не длина")
                      .GreaterThan(-1)
      .WithMessage("Max. number of team members must be greater than 0"); ;
-                RuleFor(c => c.Begin).NotEmpty().WithMessage("Name: Изображения не длина");
-                RuleFor(c => c.End).NotEmpty().WithMessage("End: Изображения не длина");
-                RuleFor(c => this.ImageCheck(images, c.ImageId)).Equal(true).WithMessage("Изображения не существет");
+                RuleFor(c => c.Begin).NotEmpty().WithMessage("Begin: Даты начала нет");
+                RuleFor(c => c.End).NotEmpty().WithMessage("End: Даты конца нет ");
+                RuleFor(c => this.ImageCheck(images, c.ImageId)).Equal(true).WithMessage("ImageId: Пространства не существет");
                 RuleFor(c => this.SpaceCheck(space, c.SpaceId)).Equal(true)
-                    .WithMessage("Пространства не существет");
+                    .WithMessage("SpaceId: Пространства не существет");
                 RuleFor(c => this.DateCheck(c.Begin, c.End)).Equal(true)
-                    .WithMessage("Дата конца дожна быть больше даты начала");
+                    .WithMessage("Date: Дата конца дожна быть больше даты начала");
             }
 
             private bool DateCheck(DateTime? begin, DateTime? end)

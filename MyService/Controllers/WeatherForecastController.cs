@@ -13,6 +13,7 @@ using MyService.Filtrs;
 using MyService.Models;
 using DalSoft.RestClient;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyService.Controllers
 {
@@ -372,13 +373,14 @@ namespace MyService.Controllers
         /// 
         /// Если нет, то возвращает код 401
         [HttpGet]
+        [Authorize]
         [TypeFilter(typeof(ScExceptionFiltr))]
         [TypeFilter(typeof(SampleExceptionFilter))]
         [Route("stub/authstub")]
         public IActionResult  CheckAuthoriz([FromHeader]
-           string token)
+           string Authorization)
         {
-            if (!this.tokencheck(token)) return Unauthorized(("Invalide token"));
+            if (!this.tokencheck(Authorization)) return Unauthorized(("Invalide token"));
 
             return new JsonResult(true );
 
