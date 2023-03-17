@@ -36,6 +36,7 @@ namespace MyService.Controllers
         /// </summary>
         ///  <remarks>
         /// На вход ничего не принимает
+        /// 
         /// Запрос возвращает полный список всех событий в базе
         /// </remarks>
         /// <returns>Список всех событий</returns>
@@ -176,6 +177,7 @@ namespace MyService.Controllers
         /// "name": "string",
         /// 
         ///"description": "string",
+        ///
         ///"begin": "2023-03-14T21:57:07.693Z",
         ///
         /// "end": "2023-03-14T21:57:07.693Z",
