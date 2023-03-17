@@ -46,10 +46,10 @@ namespace MyService.Server.Controllers
             var jwt = new JwtSecurityToken(
                     issuer: AuthOptions.ISSUER,
                     audience: AuthOptions.AUDIENCE,
-                    notBefore: now,
+                   
                     claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                     
+                   signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var response = new
@@ -68,7 +68,8 @@ namespace MyService.Server.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, person.Id.ToString()),
-                   
+                     new Claim(ClaimsIdentity.DefaultRoleClaimType, "Admin"),
+
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
