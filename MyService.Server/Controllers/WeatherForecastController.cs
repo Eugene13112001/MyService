@@ -11,6 +11,7 @@ using MyService.Server.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyService.Server.Controllers
 {
@@ -59,6 +60,15 @@ namespace MyService.Server.Controllers
             };
 
             return new JsonResult(response);
+        }
+        [Route("/Take")]
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Getå([FromHeader] string Authorization)
+        {
+            
+
+            return new JsonResult("gg");
         }
         private async Task<ClaimsIdentity?> GetIdentity(string username, string password)
         {

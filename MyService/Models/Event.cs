@@ -1,7 +1,10 @@
-﻿namespace MyService.Models
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+namespace MyService.Models
 {
     public class Event
     {
+        [BsonId]
         public Guid Id { get; set; }
 
         public string Name { get; set; }

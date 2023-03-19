@@ -13,6 +13,7 @@ namespace MyService.Features.TicketCreate
 
         public Guid EventId { get; set; }
         public int Count { get; set; }
+        public List<int> Places { get; set; }
 
         public class AddTicketCommandHandler : IRequestHandler<AddTicketCommand, bool>
         {
@@ -45,8 +46,10 @@ namespace MyService.Features.TicketCreate
 
                
                 RuleFor(c => c.EventId).NotEmpty().NotEmpty().WithMessage("EventId: EventId не существет");
-                RuleFor(c => c.Count).NotEmpty().WithMessage("EventId: Count не существет"); 
-                
+                RuleFor(c => c.Count).NotEmpty().WithMessage("EventId: Count не существет");
+                RuleFor(c => (c.Count == c.Places.Count)).Equal(true)
+                   .WithMessage("Count: Количество добавляемых мест должно быть равно длине массива");
+
 
             }
 

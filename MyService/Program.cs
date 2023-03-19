@@ -31,7 +31,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<DataOptions>(
+    builder.Configuration.GetSection("BookStoreDatabase"));
 
+builder.Services.AddSingleton<IData , DataService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
                         .AddJwtBearer(options =>

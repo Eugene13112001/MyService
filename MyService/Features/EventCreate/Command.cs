@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Collections.Generic;
 using MyService.Containers;
 using MyService.Models;
 namespace MyService.Features.EventCreate
@@ -20,15 +21,16 @@ namespace MyService.Features.EventCreate
 
             public Guid SpaceId { get; set; }
 
-            public int Count { get; set; }
+
+            public  List<int> Places { get; set; }
             public bool Free { get; set; }
             public class AddEventCommandHandler : IRequestHandler<AddEventCommand, Event>
             {
-                private readonly DataEvent _dataevent;
+                private readonly IData _dataevent;
                 private readonly DataImage _images;
                 public readonly DataSpace _spaces;
 
-                public AddEventCommandHandler(DataEvent events, DataImage images, DataSpace space)
+                public AddEventCommandHandler(IData events, DataImage images, DataSpace space)
                 {
                         this._spaces = space ?? throw new ArgumentNullException(nameof(space));
                         this._dataevent = events ?? throw new ArgumentNullException(nameof(events));
@@ -47,7 +49,9 @@ namespace MyService.Features.EventCreate
                     ev.ImageId = command.ImageId;
                     ev.SpaceId = command.SpaceId;
                     
-                    return await this._dataevent.AddEvent(ev, command.Count);
+                    
+                    Event newev =  await this._dataevent.AddEvent(ev);
+                    return await this._dataevent.AddTickets(command.Places.Count, ev.Id, ev,  command.Places);
             }
 
 
@@ -60,9 +64,8 @@ namespace MyService.Features.EventCreate
                 RuleFor(c => this.NameCheck(c.Name)).Equal(true).WithMessage("Name: Имя не существет");
                 RuleFor(c => this.NameCheckLength(c.Name)).Equal(true).WithMessage("Name: Длина имени маленькая"); 
                 RuleFor(c => c.Description).NotEmpty().WithMessage("Description: Изображения не длина");
-                RuleFor(c => c.Count).NotEmpty().WithMessage("Description: Изображения не длина")
-                     .GreaterThan(-1)
-     .WithMessage("Max. number of team members must be greater than 0"); ;
+               
+    
                 RuleFor(c => c.Begin).NotEmpty().WithMessage("Begin: Даты начала нет");
                 RuleFor(c => c.End).NotEmpty().WithMessage("End: Даты конца нет ");
                 RuleFor(c => this.ImageCheck(images, c.ImageId)).Equal(true).WithMessage("ImageId: Пространства не существет");
@@ -70,6 +73,7 @@ namespace MyService.Features.EventCreate
                     .WithMessage("SpaceId: Пространства не существет");
                 RuleFor(c => this.DateCheck(c.Begin, c.End)).Equal(true)
                     .WithMessage("Date: Дата конца дожна быть больше даты начала");
+               
             }
 
             private bool DateCheck(DateTime? begin, DateTime? end)
